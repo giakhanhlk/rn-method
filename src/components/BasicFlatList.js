@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
 	View,
 	StyleSheet,
@@ -7,9 +7,11 @@ import {
 	Image,
 	Alert,
 	TouchableHighlight,
+	RefreshControl,
 } from "react-native";
 import lists from "../constants/flatListData";
 import SwipeOut from "react-native-swipeout"; // install package
+import { fetchApi } from "../api/server";
 
 const FlatListItem = ({ item, index, refreshFlatList }) => {
 	const [activeRowKey, setActiveRowKey] = useState(null);
@@ -88,7 +90,21 @@ const FlatListItem = ({ item, index, refreshFlatList }) => {
 
 const BasicFlatList = () => {
 	const [deleteRowKey, setDeleteRowKey] = useState(null);
-	const addModal = useRef(null);
+	const [data, setData] = useState([]);
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		setLoading(true);
+		fetchApi()
+			.then((res) => {
+				setData(res);
+				setLoading(false);
+			})
+			.catch((err) => {
+				console.log(err);
+				setLoading(false);
+			});
+	}, []);
 
 	const refreshFlatList = (deleteKey) => {
 		setDeleteRowKey(deleteKey);
@@ -96,6 +112,19 @@ const BasicFlatList = () => {
 
 	const onPressAdd = () => {
 		console.log("add item");
+	};
+
+	const onRefresh = () => {
+		setLoading(true);
+		fetchApi()
+			.then((res) => {
+				setData(res);
+				setLoading(false);
+			})
+			.catch((err) => {
+				console.log(err);
+				setLoading(false);
+			});
 	};
 
 	return (
@@ -113,7 +142,7 @@ const BasicFlatList = () => {
 				</TouchableHighlight>
 			</View>
 			<FlatList
-				data={lists}
+				data={data}
 				renderItem={({ item, index }) => {
 					return (
 						<FlatListItem
@@ -124,6 +153,10 @@ const BasicFlatList = () => {
 						/>
 					);
 				}}
+				keyExtractor={(item, index) => index}
+				refreshControl={
+					<RefreshControl refreshing={loading} onRefresh={onRefresh} />
+				}
 			/>
 		</View>
 	);
@@ -135,6 +168,7 @@ const styles = StyleSheet.create({
 		color: "white",
 		padding: 10,
 		fontSize: 16,
+		flexWrap: "wrap",
 	},
 	images: {
 		width: 100,
