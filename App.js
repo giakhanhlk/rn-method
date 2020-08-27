@@ -8,12 +8,13 @@ import HorizontalFlatList from "./src/components/HorizontalFlatList";
 import BasicSectionList from "./src/components/BasicSectionList";
 import Animation from "./src/components/Animation";
 import StaggerAnimation from "./src/components/StaggerAnimation";
+import Gesture from "./src/components/Gesture";
 
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
 	return (
-		<Stack.Navigator initialRouteName="StaggerAnimation">
+		<Stack.Navigator initialRouteName="Gesture">
 			<Stack.Screen name="Vertical" component={VerticalScrollView} />
 			<Stack.Screen name="Horizontal" component={HorizontalScrollView} />
 			<Stack.Screen name="FlatList" component={BasicFlatList} />
@@ -21,6 +22,7 @@ const StackNavigator = () => {
 			<Stack.Screen name="SectionList" component={BasicSectionList} />
 			<Stack.Screen name="Animation" component={Animation} />
 			<Stack.Screen name="StaggerAnimation" component={StaggerAnimation} />
+			<Stack.Screen name="Gesture" component={Gesture} />
 		</Stack.Navigator>
 	);
 };
